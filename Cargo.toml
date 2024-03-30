@@ -9,3 +9,4 @@ authors = ["John Ellis"]
 
 [dependencies]
 rand = "0.9.0-alpha.1"
+arr_macro = "0.2.1"

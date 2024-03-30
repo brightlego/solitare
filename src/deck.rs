@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::ops::Index;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Suit {
@@ -59,6 +60,38 @@ impl PartialOrd for Card {
     }
 }
 
+fn index<T: PartialEq>(arr: &[T], item: &T) -> Option<usize> {
+    let mut i: usize = 0;
+    for t in arr {
+        if t.eq(item) {
+            return Some(i)
+        }
+    }
+    None
+}
+
+impl Card {
+    fn new(value: Value, suit: Suit) -> Self {
+        Card {suit, value}
+    }
+    
+    fn succeeds(&self, other: &Card) -> bool {
+        if self.suit == other.suit {
+            if let Some(i) = index(&VALUES, &self.value) {
+                if let Some(j) = index(&VALUES, &other.value) {
+                    i + 1 == j
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+}
+
 #[derive(Eq, PartialEq, Debug, Copy, Clone)]
 pub struct Deck<T, const N: usize> {
     cards: [T; N],
@@ -73,6 +106,7 @@ impl<T, const N: usize> From<[T; N]> for Deck<T, N> {
         }
     }
 }
+
 
 impl<T, const N: usize> Deck<T, N> {
     pub fn shuffle(&mut self) {
@@ -123,6 +157,22 @@ impl<T, const N: usize> Deck<T, N> {
 
     pub fn get_all(&self) -> Vec<&T> {
         self.get_many(N)
+    }
+    
+    pub fn is_full(&self) -> bool {
+        self.top == 0
+    }
+    
+    pub fn is_empty(&self) -> bool {
+        self.top >= N
+    }
+    
+    pub fn size(&self) -> usize {
+        if self.top >= N {
+            0
+        } else {
+            N - self.top
+        }
     }
 }
 
