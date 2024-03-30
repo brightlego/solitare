@@ -1,539 +1,93 @@
+use std::fmt::Debug;
 use super::*;
+
+const VALUES: [Value; 13] = [
+    Value::Two,
+    Value::Three,
+    Value::Four,
+    Value::Five,
+    Value::Six,
+    Value::Seven,
+    Value::Eight,
+    Value::Nine,
+    Value::Ten,
+    Value::Jack,
+    Value::Queen,
+    Value::King,
+    Value::Ace
+];
+
+const SUITS: [Suit; 4] = [
+    Suit::Clubs,
+    Suit::Hearts,
+    Suit::Diamonds,
+    Suit::Spades
+];
+
+/// Tests whether a function applied to pairs of values in the slice return the same values
+/// as another function applied on the pairs of indices.
+///
+/// # Arguments
+///
+/// * `values`: The slice of values to get pairs from
+/// * `value_func`: The function to apply on the pairs of values
+/// * `index_func`: The function to apply on the pairs of indices
+///
+/// returns: ()
+///
+/// # Examples
+/// ```
+/// // Tests if the array is sorted by Ord (without assuming Ord generates a valid ordering)
+/// let arr = ["a", "b", "c", "d", "e"];
+/// test_returns_same(&arr, |s1, s2| s1.cmp(s2), |i, j| i.cmp(j));
+/// ```
+/// ```
+/// // Tests if the array contains distinct elements
+/// let arr = [1, 2, 5, 10, -3];
+/// test_returns_same(&arr, |i, j| i == j, |i, j| i == j);
+/// ```
+
+fn test_returns_same<T, V, F1, F2>(values: &[T], value_func: F1, index_func: F2)
+        where V: Eq, V: Debug, F1: Fn(&T, &T) -> V, F2: Fn(&usize, &usize) -> V {
+    for i in 0..values.len() {
+        for j in 0..values.len() {
+            assert_eq!(value_func(&values[i], &values[j]), index_func(&i, &j));
+        }
+    }
+}
 
 #[test]
 fn suit_eq() {
-    use Suit::*;
-    assert!(Clubs == Clubs);
-    assert!(Clubs != Hearts);
-    assert!(Clubs != Diamonds);
-    assert!(Clubs != Spades);
-    assert!(Hearts != Clubs);
-    assert!(Hearts == Hearts);
-    assert!(Hearts != Diamonds);
-    assert!(Hearts != Spades);
-    assert!(Diamonds != Clubs);
-    assert!(Diamonds != Hearts);
-    assert!(Diamonds == Diamonds);
-    assert!(Diamonds != Spades);
-    assert!(Spades != Clubs);
-    assert!(Spades != Hearts);
-    assert!(Spades != Diamonds);
-    assert!(Spades == Spades);
+    test_returns_same(&SUITS, Suit::eq, |i, j| i == j)
 }
 
 #[test]
 fn value_eq() {
-    use Value::*;
-    assert!(Two == Two);
-    assert!(Two != Three);
-    assert!(Two != Four);
-    assert!(Two != Five);
-    assert!(Two != Six);
-    assert!(Two != Seven);
-    assert!(Two != Eight);
-    assert!(Two != Nine);
-    assert!(Two != Ten);
-    assert!(Two != Jack);
-    assert!(Two != Queen);
-    assert!(Two != King);
-    assert!(Two != Ace);
-    assert!(Three != Two);
-    assert!(Three == Three);
-    assert!(Three != Four);
-    assert!(Three != Five);
-    assert!(Three != Six);
-    assert!(Three != Seven);
-    assert!(Three != Eight);
-    assert!(Three != Nine);
-    assert!(Three != Ten);
-    assert!(Three != Jack);
-    assert!(Three != Queen);
-    assert!(Three != King);
-    assert!(Three != Ace);
-    assert!(Four != Two);
-    assert!(Four != Three);
-    assert!(Four == Four);
-    assert!(Four != Five);
-    assert!(Four != Six);
-    assert!(Four != Seven);
-    assert!(Four != Eight);
-    assert!(Four != Nine);
-    assert!(Four != Ten);
-    assert!(Four != Jack);
-    assert!(Four != Queen);
-    assert!(Four != King);
-    assert!(Four != Ace);
-    assert!(Five != Two);
-    assert!(Five != Three);
-    assert!(Five != Four);
-    assert!(Five == Five);
-    assert!(Five != Six);
-    assert!(Five != Seven);
-    assert!(Five != Eight);
-    assert!(Five != Nine);
-    assert!(Five != Ten);
-    assert!(Five != Jack);
-    assert!(Five != Queen);
-    assert!(Five != King);
-    assert!(Five != Ace);
-    assert!(Six != Two);
-    assert!(Six != Three);
-    assert!(Six != Four);
-    assert!(Six != Five);
-    assert!(Six == Six);
-    assert!(Six != Seven);
-    assert!(Six != Eight);
-    assert!(Six != Nine);
-    assert!(Six != Ten);
-    assert!(Six != Jack);
-    assert!(Six != Queen);
-    assert!(Six != King);
-    assert!(Six != Ace);
-    assert!(Seven != Two);
-    assert!(Seven != Three);
-    assert!(Seven != Four);
-    assert!(Seven != Five);
-    assert!(Seven != Six);
-    assert!(Seven == Seven);
-    assert!(Seven != Eight);
-    assert!(Seven != Nine);
-    assert!(Seven != Ten);
-    assert!(Seven != Jack);
-    assert!(Seven != Queen);
-    assert!(Seven != King);
-    assert!(Seven != Ace);
-    assert!(Eight != Two);
-    assert!(Eight != Three);
-    assert!(Eight != Four);
-    assert!(Eight != Five);
-    assert!(Eight != Six);
-    assert!(Eight != Seven);
-    assert!(Eight == Eight);
-    assert!(Eight != Nine);
-    assert!(Eight != Ten);
-    assert!(Eight != Jack);
-    assert!(Eight != Queen);
-    assert!(Eight != King);
-    assert!(Eight != Ace);
-    assert!(Nine != Two);
-    assert!(Nine != Three);
-    assert!(Nine != Four);
-    assert!(Nine != Five);
-    assert!(Nine != Six);
-    assert!(Nine != Seven);
-    assert!(Nine != Eight);
-    assert!(Nine == Nine);
-    assert!(Nine != Ten);
-    assert!(Nine != Jack);
-    assert!(Nine != Queen);
-    assert!(Nine != King);
-    assert!(Nine != Ace);
-    assert!(Ten != Two);
-    assert!(Ten != Three);
-    assert!(Ten != Four);
-    assert!(Ten != Five);
-    assert!(Ten != Six);
-    assert!(Ten != Seven);
-    assert!(Ten != Eight);
-    assert!(Ten != Nine);
-    assert!(Ten == Ten);
-    assert!(Ten != Jack);
-    assert!(Ten != Queen);
-    assert!(Ten != King);
-    assert!(Ten != Ace);
-    assert!(Jack != Two);
-    assert!(Jack != Three);
-    assert!(Jack != Four);
-    assert!(Jack != Five);
-    assert!(Jack != Six);
-    assert!(Jack != Seven);
-    assert!(Jack != Eight);
-    assert!(Jack != Nine);
-    assert!(Jack != Ten);
-    assert!(Jack == Jack);
-    assert!(Jack != Queen);
-    assert!(Jack != King);
-    assert!(Jack != Ace);
-    assert!(Queen != Two);
-    assert!(Queen != Three);
-    assert!(Queen != Four);
-    assert!(Queen != Five);
-    assert!(Queen != Six);
-    assert!(Queen != Seven);
-    assert!(Queen != Eight);
-    assert!(Queen != Nine);
-    assert!(Queen != Ten);
-    assert!(Queen != Jack);
-    assert!(Queen == Queen);
-    assert!(Queen != King);
-    assert!(Queen != Ace);
-    assert!(King != Two);
-    assert!(King != Three);
-    assert!(King != Four);
-    assert!(King != Five);
-    assert!(King != Six);
-    assert!(King != Seven);
-    assert!(King != Eight);
-    assert!(King != Nine);
-    assert!(King != Ten);
-    assert!(King != Jack);
-    assert!(King != Queen);
-    assert!(King == King);
-    assert!(King != Ace);
-    assert!(Ace != Two);
-    assert!(Ace != Three);
-    assert!(Ace != Four);
-    assert!(Ace != Five);
-    assert!(Ace != Six);
-    assert!(Ace != Seven);
-    assert!(Ace != Eight);
-    assert!(Ace != Nine);
-    assert!(Ace != Ten);
-    assert!(Ace != Jack);
-    assert!(Ace != Queen);
-    assert!(Ace != King);
-    assert!(Ace == Ace);
+    test_returns_same(&VALUES, Value::eq, |i, j| i == j)
 }
 
 #[test]
 fn value_ord() {
-    use Value::*;
-    assert!(Two <= Two);
-    assert!(Two >= Two);
-    assert!(Two < Three);
-    assert!(Two <= Three);
-    assert!(Two < Four);
-    assert!(Two <= Four);
-    assert!(Two < Five);
-    assert!(Two <= Five);
-    assert!(Two < Six);
-    assert!(Two <= Six);
-    assert!(Two < Seven);
-    assert!(Two <= Seven);
-    assert!(Two < Eight);
-    assert!(Two <= Eight);
-    assert!(Two < Nine);
-    assert!(Two <= Nine);
-    assert!(Two < Ten);
-    assert!(Two <= Ten);
-    assert!(Two < Jack);
-    assert!(Two <= Jack);
-    assert!(Two < Queen);
-    assert!(Two <= Queen);
-    assert!(Two < King);
-    assert!(Two <= King);
-    assert!(Two < Ace);
-    assert!(Two <= Ace);
-    assert!(Three > Two);
-    assert!(Three >= Two);
-    assert!(Three <= Three);
-    assert!(Three >= Three);
-    assert!(Three < Four);
-    assert!(Three <= Four);
-    assert!(Three < Five);
-    assert!(Three <= Five);
-    assert!(Three < Six);
-    assert!(Three <= Six);
-    assert!(Three < Seven);
-    assert!(Three <= Seven);
-    assert!(Three < Eight);
-    assert!(Three <= Eight);
-    assert!(Three < Nine);
-    assert!(Three <= Nine);
-    assert!(Three < Ten);
-    assert!(Three <= Ten);
-    assert!(Three < Jack);
-    assert!(Three <= Jack);
-    assert!(Three < Queen);
-    assert!(Three <= Queen);
-    assert!(Three < King);
-    assert!(Three <= King);
-    assert!(Three < Ace);
-    assert!(Three <= Ace);
-    assert!(Four > Two);
-    assert!(Four >= Two);
-    assert!(Four > Three);
-    assert!(Four >= Three);
-    assert!(Four <= Four);
-    assert!(Four >= Four);
-    assert!(Four < Five);
-    assert!(Four <= Five);
-    assert!(Four < Six);
-    assert!(Four <= Six);
-    assert!(Four < Seven);
-    assert!(Four <= Seven);
-    assert!(Four < Eight);
-    assert!(Four <= Eight);
-    assert!(Four < Nine);
-    assert!(Four <= Nine);
-    assert!(Four < Ten);
-    assert!(Four <= Ten);
-    assert!(Four < Jack);
-    assert!(Four <= Jack);
-    assert!(Four < Queen);
-    assert!(Four <= Queen);
-    assert!(Four < King);
-    assert!(Four <= King);
-    assert!(Four < Ace);
-    assert!(Four <= Ace);
-    assert!(Five > Two);
-    assert!(Five >= Two);
-    assert!(Five > Three);
-    assert!(Five >= Three);
-    assert!(Five > Four);
-    assert!(Five >= Four);
-    assert!(Five <= Five);
-    assert!(Five >= Five);
-    assert!(Five < Six);
-    assert!(Five <= Six);
-    assert!(Five < Seven);
-    assert!(Five <= Seven);
-    assert!(Five < Eight);
-    assert!(Five <= Eight);
-    assert!(Five < Nine);
-    assert!(Five <= Nine);
-    assert!(Five < Ten);
-    assert!(Five <= Ten);
-    assert!(Five < Jack);
-    assert!(Five <= Jack);
-    assert!(Five < Queen);
-    assert!(Five <= Queen);
-    assert!(Five < King);
-    assert!(Five <= King);
-    assert!(Five < Ace);
-    assert!(Five <= Ace);
-    assert!(Six > Two);
-    assert!(Six >= Two);
-    assert!(Six > Three);
-    assert!(Six >= Three);
-    assert!(Six > Four);
-    assert!(Six >= Four);
-    assert!(Six > Five);
-    assert!(Six >= Five);
-    assert!(Six <= Six);
-    assert!(Six >= Six);
-    assert!(Six < Seven);
-    assert!(Six <= Seven);
-    assert!(Six < Eight);
-    assert!(Six <= Eight);
-    assert!(Six < Nine);
-    assert!(Six <= Nine);
-    assert!(Six < Ten);
-    assert!(Six <= Ten);
-    assert!(Six < Jack);
-    assert!(Six <= Jack);
-    assert!(Six < Queen);
-    assert!(Six <= Queen);
-    assert!(Six < King);
-    assert!(Six <= King);
-    assert!(Six < Ace);
-    assert!(Six <= Ace);
-    assert!(Seven > Two);
-    assert!(Seven >= Two);
-    assert!(Seven > Three);
-    assert!(Seven >= Three);
-    assert!(Seven > Four);
-    assert!(Seven >= Four);
-    assert!(Seven > Five);
-    assert!(Seven >= Five);
-    assert!(Seven > Six);
-    assert!(Seven >= Six);
-    assert!(Seven <= Seven);
-    assert!(Seven >= Seven);
-    assert!(Seven < Eight);
-    assert!(Seven <= Eight);
-    assert!(Seven < Nine);
-    assert!(Seven <= Nine);
-    assert!(Seven < Ten);
-    assert!(Seven <= Ten);
-    assert!(Seven < Jack);
-    assert!(Seven <= Jack);
-    assert!(Seven < Queen);
-    assert!(Seven <= Queen);
-    assert!(Seven < King);
-    assert!(Seven <= King);
-    assert!(Seven < Ace);
-    assert!(Seven <= Ace);
-    assert!(Eight > Two);
-    assert!(Eight >= Two);
-    assert!(Eight > Three);
-    assert!(Eight >= Three);
-    assert!(Eight > Four);
-    assert!(Eight >= Four);
-    assert!(Eight > Five);
-    assert!(Eight >= Five);
-    assert!(Eight > Six);
-    assert!(Eight >= Six);
-    assert!(Eight > Seven);
-    assert!(Eight >= Seven);
-    assert!(Eight <= Eight);
-    assert!(Eight >= Eight);
-    assert!(Eight < Nine);
-    assert!(Eight <= Nine);
-    assert!(Eight < Ten);
-    assert!(Eight <= Ten);
-    assert!(Eight < Jack);
-    assert!(Eight <= Jack);
-    assert!(Eight < Queen);
-    assert!(Eight <= Queen);
-    assert!(Eight < King);
-    assert!(Eight <= King);
-    assert!(Eight < Ace);
-    assert!(Eight <= Ace);
-    assert!(Nine > Two);
-    assert!(Nine >= Two);
-    assert!(Nine > Three);
-    assert!(Nine >= Three);
-    assert!(Nine > Four);
-    assert!(Nine >= Four);
-    assert!(Nine > Five);
-    assert!(Nine >= Five);
-    assert!(Nine > Six);
-    assert!(Nine >= Six);
-    assert!(Nine > Seven);
-    assert!(Nine >= Seven);
-    assert!(Nine > Eight);
-    assert!(Nine >= Eight);
-    assert!(Nine <= Nine);
-    assert!(Nine >= Nine);
-    assert!(Nine < Ten);
-    assert!(Nine <= Ten);
-    assert!(Nine < Jack);
-    assert!(Nine <= Jack);
-    assert!(Nine < Queen);
-    assert!(Nine <= Queen);
-    assert!(Nine < King);
-    assert!(Nine <= King);
-    assert!(Nine < Ace);
-    assert!(Nine <= Ace);
-    assert!(Ten > Two);
-    assert!(Ten >= Two);
-    assert!(Ten > Three);
-    assert!(Ten >= Three);
-    assert!(Ten > Four);
-    assert!(Ten >= Four);
-    assert!(Ten > Five);
-    assert!(Ten >= Five);
-    assert!(Ten > Six);
-    assert!(Ten >= Six);
-    assert!(Ten > Seven);
-    assert!(Ten >= Seven);
-    assert!(Ten > Eight);
-    assert!(Ten >= Eight);
-    assert!(Ten > Nine);
-    assert!(Ten >= Nine);
-    assert!(Ten <= Ten);
-    assert!(Ten >= Ten);
-    assert!(Ten < Jack);
-    assert!(Ten <= Jack);
-    assert!(Ten < Queen);
-    assert!(Ten <= Queen);
-    assert!(Ten < King);
-    assert!(Ten <= King);
-    assert!(Ten < Ace);
-    assert!(Ten <= Ace);
-    assert!(Jack > Two);
-    assert!(Jack >= Two);
-    assert!(Jack > Three);
-    assert!(Jack >= Three);
-    assert!(Jack > Four);
-    assert!(Jack >= Four);
-    assert!(Jack > Five);
-    assert!(Jack >= Five);
-    assert!(Jack > Six);
-    assert!(Jack >= Six);
-    assert!(Jack > Seven);
-    assert!(Jack >= Seven);
-    assert!(Jack > Eight);
-    assert!(Jack >= Eight);
-    assert!(Jack > Nine);
-    assert!(Jack >= Nine);
-    assert!(Jack > Ten);
-    assert!(Jack >= Ten);
-    assert!(Jack <= Jack);
-    assert!(Jack >= Jack);
-    assert!(Jack < Queen);
-    assert!(Jack <= Queen);
-    assert!(Jack < King);
-    assert!(Jack <= King);
-    assert!(Jack < Ace);
-    assert!(Jack <= Ace);
-    assert!(Queen > Two);
-    assert!(Queen >= Two);
-    assert!(Queen > Three);
-    assert!(Queen >= Three);
-    assert!(Queen > Four);
-    assert!(Queen >= Four);
-    assert!(Queen > Five);
-    assert!(Queen >= Five);
-    assert!(Queen > Six);
-    assert!(Queen >= Six);
-    assert!(Queen > Seven);
-    assert!(Queen >= Seven);
-    assert!(Queen > Eight);
-    assert!(Queen >= Eight);
-    assert!(Queen > Nine);
-    assert!(Queen >= Nine);
-    assert!(Queen > Ten);
-    assert!(Queen >= Ten);
-    assert!(Queen > Jack);
-    assert!(Queen >= Jack);
-    assert!(Queen <= Queen);
-    assert!(Queen >= Queen);
-    assert!(Queen < King);
-    assert!(Queen <= King);
-    assert!(Queen < Ace);
-    assert!(Queen <= Ace);
-    assert!(King > Two);
-    assert!(King >= Two);
-    assert!(King > Three);
-    assert!(King >= Three);
-    assert!(King > Four);
-    assert!(King >= Four);
-    assert!(King > Five);
-    assert!(King >= Five);
-    assert!(King > Six);
-    assert!(King >= Six);
-    assert!(King > Seven);
-    assert!(King >= Seven);
-    assert!(King > Eight);
-    assert!(King >= Eight);
-    assert!(King > Nine);
-    assert!(King >= Nine);
-    assert!(King > Ten);
-    assert!(King >= Ten);
-    assert!(King > Jack);
-    assert!(King >= Jack);
-    assert!(King > Queen);
-    assert!(King >= Queen);
-    assert!(King <= King);
-    assert!(King >= King);
-    assert!(King < Ace);
-    assert!(King <= Ace);
-    assert!(Ace > Two);
-    assert!(Ace >= Two);
-    assert!(Ace > Three);
-    assert!(Ace >= Three);
-    assert!(Ace > Four);
-    assert!(Ace >= Four);
-    assert!(Ace > Five);
-    assert!(Ace >= Five);
-    assert!(Ace > Six);
-    assert!(Ace >= Six);
-    assert!(Ace > Seven);
-    assert!(Ace >= Seven);
-    assert!(Ace > Eight);
-    assert!(Ace >= Eight);
-    assert!(Ace > Nine);
-    assert!(Ace >= Nine);
-    assert!(Ace > Ten);
-    assert!(Ace >= Ten);
-    assert!(Ace > Jack);
-    assert!(Ace >= Jack);
-    assert!(Ace > Queen);
-    assert!(Ace >= Queen);
-    assert!(Ace > King);
-    assert!(Ace >= King);
-    assert!(Ace <= Ace);
-    assert!(Ace >= Ace);
+    test_returns_same(&VALUES, Value::cmp, |i, j| i.cmp(j))
+}
+
+#[test]
+fn card_ord() {
+    for i in 0..VALUES.len() {
+        for j in 0..VALUES.len() {
+            for k in 0..SUITS.len() {
+                for l in 0..SUITS.len() {
+                    let card1 = Card { suit: SUITS[k], value: VALUES[i]};
+                    let card2 = Card { suit: SUITS[l], value: VALUES[j]};
+                    let cmp = card1.partial_cmp(&card2);
+
+                    if k == l {
+                        assert_eq!(cmp, Some(i.cmp(&j)));
+                    } else {
+                        assert_eq!(cmp, None);
+                    }
+                }
+            }
+        }
+    }
 }
